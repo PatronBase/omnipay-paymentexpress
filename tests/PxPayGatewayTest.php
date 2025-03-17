@@ -46,12 +46,14 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->setMockHttpResponse('PxPayPurchaseSuccess.txt');
 
         $options = array_merge($this->options, array(
-            'description'      => 'TestReference',
-            'transactionId'    => 'P075985DA31094D8',
-            'transactionData1' => 'Business Name',
-            'transactionData2' => 'Business Phone',
-            'transactionData3' => 'Business ID',
-            'cardReference'    => '000000030884cdc6'
+            'description'        => 'TestReference',
+            'transactionId'      => 'P075985DA31094D8',
+            'transactionData1'   => 'Business Name',
+            'transactionData2'   => 'Business Phone',
+            'transactionData3'   => 'Business ID',
+            'cardReference'      => '000000030884cdc6',
+            'opt'                => 'TO=1302231657',
+            'forcePaymentMethod' => 'VisaCheckout'
         ));
 
         $request = $this->gateway->authorize($options);
@@ -62,6 +64,8 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertSame($options['transactionData2'], $request->getTransactionData2());
         $this->assertSame($options['transactionData3'], $request->getTransactionData3());
         $this->assertSame($options['cardReference'], $request->getCardReference());
+        $this->assertSame($options['opt'], $request->getOpt());
+        $this->assertSame($options['forcePaymentMethod'], $request->getForcePaymentMethod());
 
         $response = $request->send();
 
