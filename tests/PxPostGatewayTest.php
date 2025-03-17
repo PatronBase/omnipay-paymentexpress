@@ -45,10 +45,13 @@ class PxPostGatewayTest extends GatewayTestCase
     /**
      * @expectedException Omnipay\Common\Exception\InvalidRequestException
      */
-    public function testAuthorizeInvalidCard()
+    public function testAuthorizeNeedCardFailure()
     {
-        $options = array('amount' => '10.00');
-        $this->gateway->authorize($options)->send();
+        $options = $this->options;
+        // this or the cardReference is required, should throw an exception
+        unset($options['card']);
+
+        $response = $this->gateway->authorize($options)->send();
     }
 
     public function testAuthorizeWithTransactionDataSuccess()
@@ -61,7 +64,8 @@ class PxPostGatewayTest extends GatewayTestCase
             'transactionData1' => 'Business Name',
             'transactionData2' => 'Business Phone',
             'transactionData3' => 'Business ID',
-            'cardReference'    => '000000030884cdc6'
+            'cardReference'    => '000000030884cdc6',
+            'receiptEmail'     => 'customer@example.com'
         ));
 
         $request = $this->gateway->authorize($options);
@@ -71,6 +75,7 @@ class PxPostGatewayTest extends GatewayTestCase
         $this->assertSame($options['transactionData1'], $request->getTransactionData1());
         $this->assertSame($options['transactionData2'], $request->getTransactionData2());
         $this->assertSame($options['transactionData3'], $request->getTransactionData3());
+        $this->assertSame($options['receiptEmail'], $request->getReceiptEmail());
 
         $response = $request->send();
 
