@@ -2,6 +2,7 @@
 
 namespace Omnipay\PaymentExpress;
 
+use Omnipay\Common\Message\NotificationInterface;
 use Omnipay\Tests\GatewayTestCase;
 
 class PxPayGatewayTest extends GatewayTestCase
@@ -220,6 +221,36 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertNull($response->getTransactionReference());
         $this->assertSame('Invalid Key or Username. Also check that if a TxnId is being supplied that it is unique.', $response->getMessage());
         $this->assertSame('IC', $response->getCode());
+    }
+
+    public function testAcceptNotificationSuccess()
+    {
+        $this->getHttpRequest()->query->replace(array('result' => 'abc123'));
+
+        $this->setMockHttpResponse('PxPayCompletePurchaseSuccess.txt');
+
+        $response = $this->gateway->acceptNotification($this->options);
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('0000000103f5dc65', $response->getTransactionReference());
+        $this->assertSame('APPROVED', $response->getMessage());
+        $this->assertSame(NotificationInterface::STATUS_COMPLETED, $response->getTransactionStatus());
+    }
+
+    public function testAcceptNotificationFailure()
+    {
+        $this->getHttpRequest()->query->replace(array('result' => 'abc123'));
+
+        $this->setMockHttpResponse('PxPayCompletePurchaseFailure.txt');
+
+        $response = $this->gateway->acceptNotification($this->options);
+
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertNull($response->getTransactionReference());
+        $this->assertSame('Invalid Key or Username. Also check that if a TxnId is being supplied that it is unique.', $response->getMessage());
+        $this->assertSame(NotificationInterface::STATUS_FAILED, $response->getTransactionStatus());
     }
 
     public function testCompleteCreateCardSuccess()
