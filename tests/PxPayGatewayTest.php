@@ -77,7 +77,7 @@ class PxPayGatewayTest extends GatewayTestCase
       $this->_testSuccessfulPurchase($response);
     }
 
-    public function testPurchaseWithCardReferenceSuccess()
+    public function testPurchaseWithAddBillCardSuccess()
     {
         $this->setMockHttpResponse('PxPayPurchaseSuccess.txt');
 
@@ -89,6 +89,29 @@ class PxPayGatewayTest extends GatewayTestCase
         $response = $this->gateway->purchase($options)->send();
 
       $this->_testSuccessfulPurchase($response);
+    }
+
+    public function testPurchaseWithCardReferenceSuccess()
+    {
+        $this->setMockHttpResponse('PxPostPurchaseSuccess.txt');
+
+        $options = array_merge($this->options, array(
+            'cardReference' => 'Card reference',
+        ));
+
+        $this->gateway->setParameter('pxPostUsername', 'Developer_Post');
+        $this->gateway->setParameter('pxPostPassword', 'AReallyComplexPassword!');
+
+        $response = $this->gateway->purchase($options)->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('000000030884cdc6', $response->getTransactionReference());
+        $this->assertSame('Transaction Approved', $response->getMessage());
+
+        // gateway instance is re-used, so reset these
+        $this->gateway->setParameter('pxPostUsername', null);
+        $this->gateway->setParameter('pxPostPassword', null);
     }
 
     public function testPurchaseFailure()
