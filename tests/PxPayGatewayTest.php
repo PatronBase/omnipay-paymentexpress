@@ -39,6 +39,7 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertNull($response->getRedirectData());
         $this->assertNull($response->getRedirectUrl());
         $this->assertSame('Invalid Key', $response->getMessage());
+        $this->assertNull($response->getCode());
     }
 
     public function testAuthorizeWithTransactionDataSuccess()
@@ -161,6 +162,7 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('0000000103f5dc65', $response->getTransactionReference());
         $this->assertSame('APPROVED', $response->getMessage());
+        $this->assertSame('00', $response->getCode());
     }
 
     public function testCompleteAuthorizeSuccessWithPostResult()
@@ -189,7 +191,8 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertNull($response->getTransactionReference());
-        $this->assertSame('Length of the data to decrypt is invalid.', $response->getMessage());
+        $this->assertSame('Invalid Key or Username. Also check that if a TxnId is being supplied that it is unique.', $response->getMessage());
+        $this->assertSame('IC', $response->getCode());
     }
 
     public function testCompleteCreateCardSuccess()
@@ -243,6 +246,7 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('0000000103f5dc65', $response->getTransactionReference());
         $this->assertSame('APPROVED', $response->getMessage());
+        $this->assertSame('00', $response->getCode());
     }
 
     public function testCompletePurchaseWithTransactionDataSuccess()
@@ -283,7 +287,8 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertNull($response->getTransactionReference());
-        $this->assertSame('Length of the data to decrypt is invalid.', $response->getMessage());
+        $this->assertSame('Invalid Key or Username. Also check that if a TxnId is being supplied that it is unique.', $response->getMessage());
+        $this->assertSame('IC', $response->getCode());
     }
 
     /**
