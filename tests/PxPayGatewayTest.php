@@ -82,8 +82,8 @@ class PxPayGatewayTest extends GatewayTestCase
         $this->setMockHttpResponse('PxPayPurchaseSuccess.txt');
 
         $options = array_merge($this->options, array(
-            'cardReference'     => 'Card reference',
-            'EnableAddBillCard' => 1
+            'cardReference' => 'Card reference',
+            'createToken' => true
         ));
 
         $response = $this->gateway->purchase($options)->send();
