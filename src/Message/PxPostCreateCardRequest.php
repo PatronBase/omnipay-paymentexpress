@@ -26,14 +26,12 @@ class PxPostCreateCardRequest extends PxPostAuthorizeRequest
         $this->getCard()->validate();
 
         $this->setAmount($this->getAmount() ? $this->getAmount() : '1.00');
+        $this->setCreateToken(true);
 
         if ($this->getAction()) {
             $this->action = $this->getAction();
         }
 
-        $data = parent::getData();
-        $data->EnableAddBillCard = 1;
-
-        return $data;
+        return parent::getData();
     }
 }

@@ -38,6 +38,16 @@ class PxPostAuthorizeRequest extends AbstractRequest
         return $this->getTestMode() === true ? $this->testEndpoint : $this->liveEndpoint;
     }
 
+    public function getCreateToken()
+    {
+        return $this->getParameter('createToken');
+    }
+
+    public function setCreateToken($value)
+    {
+        return $this->setParameter('createToken', $value);
+    }
+
     /**
      * Get the ClientType option
      *
@@ -213,6 +223,10 @@ class PxPostAuthorizeRequest extends AbstractRequest
 
         if ($this->getReceiptEmail()) {
             $data->ReceiptEmail = $this->getReceiptEmail();
+        }
+
+        if ($this->getCreateToken()) {
+            $data->EnableAddBillCard = 1;
         }
 
         return $data;

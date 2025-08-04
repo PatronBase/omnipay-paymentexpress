@@ -102,6 +102,16 @@ class PxPayAuthorizeRequest extends AbstractRequest
         return $this->getTestMode() === true ? $this->testEndpoint : $this->liveEndpoint;
     }
 
+    public function getCreateToken()
+    {
+        return $this->getParameter('createToken');
+    }
+
+    public function setCreateToken($value)
+    {
+        return $this->setParameter('createToken', $value);
+    }
+
     /**
      * Get the PxPay TxnData1
      *
@@ -307,6 +317,10 @@ class PxPayAuthorizeRequest extends AbstractRequest
 
         if ($this->getForcePaymentMethod()) {
             $data->ForcePaymentMethod = $this->getForcePaymentMethod();
+        }
+
+        if ($this->getCreateToken()) {
+            $data->EnableAddBillCard = 1;
         }
 
         return $data;

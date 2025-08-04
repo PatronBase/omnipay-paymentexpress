@@ -15,7 +15,18 @@ class PxFusionPurchaseRequest extends AbstractRequest
     protected $namespace = 'http://paymentexpress.com';
     protected $action = 'Purchase';
 
+    /**
+     * @deprecated
+     */
     protected function getAddBillCard()
+    {
+        return $this->getCreateToken();
+    }
+
+    /**
+     * Does not currently support saving cards; change to standard setter/getter pattern if/when it does support it
+     */
+    public function getCreateToken()
     {
         return 0;
     }
@@ -83,7 +94,7 @@ class PxFusionPurchaseRequest extends AbstractRequest
         $tranDetail = $data->addChild('tranDetail');
         $tranDetail->amount = $this->getAmount();
         $tranDetail->currency = $this->getCurrency();
-        $tranDetail->enableAddBillCard = $this->getAddBillCard();
+        $tranDetail->enableAddBillCard = $this->getCreateToken() ? 1 : 0;
         $tranDetail->merchantReference = $this->getTransactionId();
         $tranDetail->returnUrl = $this->getReturnUrl();
         $tranDetail->txnType = $this->action;
