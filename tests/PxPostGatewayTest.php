@@ -2,11 +2,12 @@
 
 namespace Omnipay\PaymentExpress;
 
+use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Tests\GatewayTestCase;
 
 class PxPostGatewayTest extends GatewayTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -42,15 +43,13 @@ class PxPostGatewayTest extends GatewayTestCase
         $this->assertSame('The transaction was Declined (U5)', $response->getMessage());
     }
 
-    /**
-     * @expectedException Omnipay\Common\Exception\InvalidRequestException
-     */
     public function testAuthorizeNeedCardFailure()
     {
         $options = $this->options;
         // this or the cardReference is required, should throw an exception
         unset($options['card']);
 
+        $this->expectException(InvalidRequestException::class);
         $response = $this->gateway->authorize($options)->send();
     }
 
@@ -264,7 +263,7 @@ class PxPostGatewayTest extends GatewayTestCase
         $request = $this->gateway->authorize($options);
 
         $this->assertFalse($request->getTestMode());
-        $this->assertContains('sec.windcave.com', $request->getEndpoint());
+        $this->assertStringContainsString('sec.windcave.com', $request->getEndpoint());
     }
 
     public function testTestModeEnabled()
@@ -276,6 +275,6 @@ class PxPostGatewayTest extends GatewayTestCase
         $request = $this->gateway->authorize($options);
 
         $this->assertTrue($request->getTestMode());
-        $this->assertContains('uat.windcave.com', $request->getEndpoint());
+        $this->assertStringContainsString('uat.windcave.com', $request->getEndpoint());
     }
 }
